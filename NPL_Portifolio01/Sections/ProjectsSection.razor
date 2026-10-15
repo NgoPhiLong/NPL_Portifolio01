@@ -1,0 +1,61 @@
+@inherits SiteComponentBase
+
+<section id="projects" class="section section-alt" data-nav-section>
+    <div class="container">
+        <SectionHeading Index="@Site.SectionNumber("projects")" Eyebrow="@L("nav.projects")" Title="@L("projects.title")" Subtitle="@L("projects.subtitle")" />
+
+        @if (Categories.Count > 1)
+        {
+            <div class="filter-bar reveal" role="group" aria-label="@L("projects.filter")">
+                <button type="button" class="filter-chip @(filter is null ? "is-active" : null)"
+                        aria-pressed="@(filter is null ? "true" : "false")" @onclick="() => filter = null">
+                    @L("projects.all") <span class="filter-count">@Data.Projects.Count</span>
+                </button>
+                @foreach (var category in Categories)
+                {
+                    var key = category.Key;
+                    var count = Data.Projects.Count(p => string.Equals(CategoryKey(p.Category), key, StringComparison.OrdinalIgnoreCase));
+                    <button type="button" class="filter-chip @(filter == key ? "is-active" : null)"
+                            aria-pressed="@(filter == key ? "true" : "false")" @onclick="() => filter = key">
+                        @T(category.Text) <span class="filter-count">@count</span>
+                    </button>
+                }
+            </div>
+        }
+
+        <div class="project-grid">
+            @foreach (var (project, index, position) in VisibleProjects)
+            {
+                <ProjectCard @key="project" Project="project" Hue="ProjectCard.HueFor(index)" DelayMs="Math.Min(position, 5) * 80"
+                             OnOpen="Open" />
+            }
+        </div>
+    </div>
+
+    <ProjectDialog Project="selected" Hue="selectedHue" OnClose="() => selected = null" />
+</section>
+
+@code {
+    private string? filter;
+    private Project? selected;
+    private int selectedHue;
+
+    private static string CategoryKey(LocalizedText category) => category.Get(LocalizedText.FallbackLanguage).Trim();
+
+    private List<(LocalizedText Text, string Key)> Categories => Data.Projects
+        .Where(p => !p.Category.IsEmpty)
+        .Select(p => (Text: p.Category, Key: CategoryKey(p.Category)))
+        .DistinctBy(c => c.Key, StringComparer.OrdinalIgnoreCase)
+        .ToList();
+
+    private IEnumerable<(Project Project, int Index, int Position)> VisibleProjects => Data.Projects
+        .Select((project, index) => (project, index))
+        .Where(p => filter is null || string.Equals(CategoryKey(p.project.Category), filter, StringComparison.OrdinalIgnoreCase))
+        .Select((p, position) => (p.project, p.index, position));
+
+    private void Open(Project project)
+    {
+        selectedHue = ProjectCard.HueFor(Data.Projects.IndexOf(project));
+        selected = project;
+    }
+}

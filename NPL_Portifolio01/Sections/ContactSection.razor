@@ -1,0 +1,226 @@
+@inherits SiteComponentBase
+@implements IDisposable
+@inject IJSRuntime JS
+@inject HttpClient Http
+@inject NavigationManager Navigation
+
+<section id="contact" class="section" data-nav-section>
+    <div class="container">
+        <SectionHeading Index="@Site.SectionNumber("contact")" Eyebrow="@L("nav.contact")"
+                        Title="@(Contact.Heading.IsEmpty ? L("contact.title") : T(Contact.Heading))"
+                        Subtitle="@(Contact.Text.IsEmpty ? L("contact.subtitle") : T(Contact.Text))" />
+
+        <div class="contact-grid">
+            <aside class="contact-card reveal">
+                @if (!string.IsNullOrWhiteSpace(Profile.Email))
+                {
+                    <div class="contact-item">
+                        <span class="icon-badge" aria-hidden="true"><Icon Name="mail" Size="20" /></span>
+                        <div class="contact-item-body">
+                            <span class="contact-label">@L("contact.email")</span>
+                            <a class="contact-value" href="mailto:@Profile.Email">@Profile.Email</a>
+                        </div>
+                        <button type="button" class="icon-btn small @(copied ? "is-success" : null)" @onclick="CopyEmailAsync"
+                                aria-label="@L("contact.copy")" title="@(copied ? L("contact.copied") : L("contact.copy"))">
+                            <Icon Name="@(copied ? "check" : "copy")" Size="17" />
+                        </button>
+                    </div>
+                }
+                @if (!string.IsNullOrWhiteSpace(Profile.Phone))
+                {
+                    <div class="contact-item">
+                        <span class="icon-badge" aria-hidden="true"><Icon Name="phone" Size="20" /></span>
+                        <div class="contact-item-body">
+                            <span class="contact-label">@L("contact.phone")</span>
+                            <a class="contact-value" href="@PhoneHref">@Profile.Phone</a>
+                        </div>
+                    </div>
+                }
+                @if (!Profile.Location.IsEmpty)
+                {
+                    <div class="contact-item">
+                        <span class="icon-badge" aria-hidden="true"><Icon Name="map-pin" Size="20" /></span>
+                        <div class="contact-item-body">
+                            <span class="contact-label">@L("contact.location")</span>
+                            <span class="contact-value">@T(Profile.Location)</span>
+                        </div>
+                    </div>
+                }
+                <SocialLinks Class="contact-socials" />
+                <span class="sr-only" role="status">@(copied ? L("contact.copied") : null)</span>
+            </aside>
+
+            <form class="contact-form reveal" style="--delay: 120ms" @onsubmit="SubmitAsync" @onsubmit:preventDefault novalidate>
+                <h3 class="contact-form-title">@L("contact.form.title")</h3>
+
+                <div class="field-row">
+                    <label class="field">
+                        <span class="field-label">@L("contact.form.name")</span>
+                        <input type="text" name="name" autocomplete="name" maxlength="100" required
+                               placeholder="@L("contact.form.namePlaceholder")" @bind="name" @bind:event="oninput" />
+                    </label>
+                    <label class="field">
+                        <span class="field-label">@L("contact.form.email")</span>
+                        <input type="email" name="email" autocomplete="email" maxlength="150" required
+                               placeholder="you@example.com" @bind="email" @bind:event="oninput" />
+                    </label>
+                </div>
+
+                <label class="field">
+                    <span class="field-label">@L("contact.form.message")</span>
+                    <textarea name="message" rows="5" maxlength="4000" required
+                              placeholder="@L("contact.form.messagePlaceholder")" @bind="message" @bind:event="oninput"></textarea>
+                </label>
+
+                <div class="form-footer">
+                    <button type="submit" class="btn btn-primary" disabled="@sending">
+                        <Icon Name="send" Size="18" /> @L(sending ? "contact.form.sending" : "contact.form.send")
+                    </button>
+                    <p class="form-status @StatusClass" role="status">@(statusKey is null ? null : L(statusKey))</p>
+                </div>
+
+                @if (!UsesFormspree)
+                {
+                    <p class="form-note"><Icon Name="info" Size="15" /> @L("contact.form.mailtoNote")</p>
+                }
+            </form>
+        </div>
+    </div>
+</section>
+
+@code {
+    private string name = string.Empty;
+    private string email = string.Empty;
+    private string message = string.Empty;
+    private bool sending;
+    private bool copied;
+    private string? statusKey;
+    private bool statusIsError;
+    private CancellationTokenSource? copiedReset;
+
+    private Profile Profile => Data.Profile;
+    private ContactInfo Contact => Data.Contact;
+    private bool UsesFormspree => !string.IsNullOrWhiteSpace(Contact.FormspreeId);
+    private string PhoneHref => "tel:" + new string((Profile.Phone ?? string.Empty).Where(c => char.IsDigit(c) || c == '+').ToArray());
+    private string? StatusClass => statusKey is null ? null : statusIsError ? "is-error" : "is-success";
+
+    private async Task CopyEmailAsync()
+    {
+        if (string.IsNullOrWhiteSpace(Profile.Email) || !await JS.InvokeAsync<bool>("npl.copyText", Profile.Email))
+        {
+            return;
+        }
+
+        copied = true;
+        StateHasChanged();
+        copiedReset?.Cancel();
+        copiedReset = new CancellationTokenSource();
+        try
+        {
+            await Task.Delay(2000, copiedReset.Token);
+            copied = false;
+        }
+        catch (OperationCanceledException)
+        {
+        }
+    }
+
+    private async Task SubmitAsync()
+    {
+        if (sending)
+        {
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(message))
+        {
+            SetStatus("contact.form.required", isError: true);
+            return;
+        }
+
+        if (!IsValidEmail(email.Trim()))
+        {
+            SetStatus("contact.form.invalidEmail", isError: true);
+            return;
+        }
+
+        if (!UsesFormspree)
+        {
+            OpenMailApp();
+            return;
+        }
+
+        sending = true;
+        statusKey = null;
+        try
+        {
+            using var request = new HttpRequestMessage(HttpMethod.Post, $"https://formspree.io/f/{Uri.EscapeDataString(Contact.FormspreeId!.Trim())}")
+            {
+                Content = new FormUrlEncodedContent(new Dictionary<string, string>
+                {
+                    ["name"] = name.Trim(),
+                    ["email"] = email.Trim(),
+                    ["message"] = message.Trim(),
+                    ["_subject"] = $"Portfolio – {name.Trim()}",
+                }),
+            };
+            request.Headers.Accept.ParseAdd("application/json");
+
+            using var response = await Http.SendAsync(request);
+            if (response.IsSuccessStatusCode)
+            {
+                name = email = message = string.Empty;
+                SetStatus("contact.form.sent", isError: false);
+            }
+            else
+            {
+                SetStatus("contact.form.error", isError: true);
+            }
+        }
+        catch (HttpRequestException)
+        {
+            SetStatus("contact.form.error", isError: true);
+        }
+        finally
+        {
+            sending = false;
+        }
+    }
+
+    private void OpenMailApp()
+    {
+        if (string.IsNullOrWhiteSpace(Profile.Email))
+        {
+            SetStatus("contact.form.error", isError: true);
+            return;
+        }
+
+        var subject = Uri.EscapeDataString($"Portfolio – {name.Trim()}");
+        var body = Uri.EscapeDataString($"{message.Trim()}\n\n— {name.Trim()} <{email.Trim()}>");
+        SetStatus("contact.form.opened", isError: false);
+        Navigation.NavigateTo($"mailto:{Profile.Email}?subject={subject}&body={body}");
+    }
+
+    private void SetStatus(string key, bool isError)
+    {
+        statusKey = key;
+        statusIsError = isError;
+    }
+
+    private static bool IsValidEmail(string value)
+    {
+        var at = value.IndexOf('@');
+        var lastDot = value.LastIndexOf('.');
+        return at > 0
+               && at == value.LastIndexOf('@')
+               && lastDot > at + 1
+               && lastDot < value.Length - 1
+               && !value.Any(char.IsWhiteSpace);
+    }
+
+    public void Dispose()
+    {
+        copiedReset?.Cancel();
+        copiedReset?.Dispose();
+    }
+}

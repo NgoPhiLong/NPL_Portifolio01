@@ -1,5 +1,21 @@
 ﻿@page "/not-found"
 @layout MainLayout
+@inherits SiteComponentBase
 
-<h3>Not Found</h3>
-<p>Sorry, the content you are looking for does not exist.</p>
+<PageTitle>404 — @L("notfound.title")</PageTitle>
+
+<section class="not-found">
+    <div class="hero-bg" aria-hidden="true">
+        <span class="blob blob-1"></span>
+        <span class="blob blob-2"></span>
+        <span class="hero-grid"></span>
+    </div>
+    <div class="container not-found-inner">
+        <p class="not-found-code" aria-hidden="true"><span class="gradient-text">404</span></p>
+        <h1>@L("notfound.title")</h1>
+        <p class="not-found-text">@L("notfound.text")</p>
+        <SectionLink Target="home" class="btn btn-primary">
+            <Icon Name="home" Size="18" /> @L("notfound.home")
+        </SectionLink>
+    </div>
+</section>

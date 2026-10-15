@@ -1,0 +1,114 @@
+@inherits SiteComponentBase
+@implements IDisposable
+@inject IJSRuntime JS
+
+<dialog class="project-dialog" @ref="dialog" aria-labelledby="project-dialog-title" style="--hue: @Hue">
+    @if (Project is not null)
+    {
+        <div class="dialog-cover">
+            @if (!string.IsNullOrWhiteSpace(Project.Image))
+            {
+                <img src="@Project.Image" alt="" />
+            }
+            else
+            {
+                <span class="project-cover-art" aria-hidden="true">
+                    <Icon Name="@Project.Icon" Size="64" StrokeWidth="1.3" />
+                </span>
+            }
+            <button type="button" class="icon-btn dialog-close" @onclick="CloseAsync" aria-label="@L("projects.close")" title="@L("projects.close")">
+                <Icon Name="x" />
+            </button>
+        </div>
+
+        <div class="dialog-body">
+            <p class="project-meta">
+                <span>@T(Project.Category)</span>
+                @if (!string.IsNullOrWhiteSpace(Project.Year))
+                {
+                    <span class="dot-separator" aria-hidden="true"></span>
+                    <span>@Project.Year</span>
+                }
+            </p>
+            <h3 id="project-dialog-title" class="dialog-title">@T(Project.Title)</h3>
+            <p class="dialog-text">@T(Project.Description.IsEmpty ? Project.Summary : Project.Description)</p>
+
+            @if (Project.Highlights.Count > 0)
+            {
+                <h4 class="dialog-subtitle">@L("projects.highlights")</h4>
+                <ul class="check-list">
+                    @foreach (var highlight in Project.Highlights)
+                    {
+                        <li><Icon Name="check" Size="16" StrokeWidth="2.5" /><span>@T(highlight)</span></li>
+                    }
+                </ul>
+            }
+
+            @if (Project.Tags.Count > 0)
+            {
+                <h4 class="dialog-subtitle">@L("projects.tech")</h4>
+                <ul class="tag-list">
+                    @foreach (var tag in Project.Tags)
+                    {
+                        <li class="tag">@tag</li>
+                    }
+                </ul>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(Project.RepoUrl) || !string.IsNullOrWhiteSpace(Project.DemoUrl))
+            {
+                <div class="dialog-actions">
+                    @if (!string.IsNullOrWhiteSpace(Project.DemoUrl))
+                    {
+                        <a class="btn btn-primary" href="@Project.DemoUrl" target="_blank" rel="noopener noreferrer">
+                            <Icon Name="external-link" Size="18" /> @L("projects.demo")
+                        </a>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(Project.RepoUrl))
+                    {
+                        <a class="btn btn-ghost" href="@Project.RepoUrl" target="_blank" rel="noopener noreferrer">
+                            <Icon Name="github" Size="18" /> @L("projects.code")
+                        </a>
+                    }
+                </div>
+            }
+        </div>
+    }
+</dialog>
+
+@code {
+    [Parameter] public Project? Project { get; set; }
+    [Parameter] public int Hue { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+
+    private ElementReference dialog;
+    private DotNetObjectReference<ProjectDialog>? selfRef;
+    private Project? shownProject;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            selfRef = DotNetObjectReference.Create(this);
+            await JS.InvokeVoidAsync("npl.initDialog", dialog, selfRef);
+        }
+
+        if (!ReferenceEquals(Project, shownProject))
+        {
+            shownProject = Project;
+            await JS.InvokeVoidAsync(Project is null ? "npl.closeDialog" : "npl.showDialog", dialog);
+        }
+    }
+
+    private Task CloseAsync() => JS.InvokeVoidAsync("npl.closeDialog", dialog).AsTask();
+
+    /// <summary>Called by site.js whenever the dialog closes (close button, Esc key or backdrop click).</summary>
+    [JSInvokable]
+    public Task OnDialogClosed()
+    {
+        shownProject = null;
+        return OnClose.InvokeAsync();
+    }
+
+    public void Dispose() => selfRef?.Dispose();
+}

@@ -1,0 +1,75 @@
+@inherits SiteComponentBase
+
+<section id="skills" class="section section-alt" data-nav-section>
+    <div class="container">
+        <SectionHeading Index="@Site.SectionNumber("skills")" Eyebrow="@L("nav.skills")" Title="@L("skills.title")" Subtitle="@L("skills.subtitle")" />
+
+        @if (Data.SkillGroups.Count > 0)
+        {
+            <div class="skills-grid">
+                @foreach (var (group, index) in Data.SkillGroups.Select((g, i) => (g, i)))
+                {
+                    var rated = group.Skills.Where(s => s.Level is not null).ToList();
+                    var tags = group.Skills.Where(s => s.Level is null).ToList();
+
+                    <article class="skill-card reveal" style="--delay: @(index * 90)ms">
+                        <header class="skill-card-head">
+                            <span class="icon-badge" aria-hidden="true"><Icon Name="@group.Icon" Size="20" /></span>
+                            <h3>@T(group.Title)</h3>
+                        </header>
+
+                        @if (rated.Count > 0)
+                        {
+                            <ul class="skill-bars">
+                                @foreach (var skill in rated)
+                                {
+                                    var level = Math.Clamp(skill.Level ?? 0, 0, 100);
+                                    <li class="skill-bar">
+                                        <div class="skill-bar-top">
+                                            <span class="skill-name">@skill.Name</span>
+                                            <span class="skill-level">@LevelLabel(level)</span>
+                                        </div>
+                                        <span class="bar" aria-hidden="true"><span class="bar-fill" style="--level: @(level)%"></span></span>
+                                    </li>
+                                }
+                            </ul>
+                        }
+
+                        @if (tags.Count > 0)
+                        {
+                            <ul class="chip-list">
+                                @foreach (var skill in tags)
+                                {
+                                    <li class="chip">@skill.Name</li>
+                                }
+                            </ul>
+                        }
+                    </article>
+                }
+            </div>
+        }
+
+        @if (Data.Toolbox.Count > 0)
+        {
+            <div class="toolbox reveal">
+                <h3 class="toolbox-title"><Icon Name="tool" Size="18" /> @L("skills.toolbox")</h3>
+                <ul class="chip-list">
+                    @foreach (var tool in Data.Toolbox)
+                    {
+                        <li class="chip">@tool</li>
+                    }
+                </ul>
+            </div>
+        }
+    </div>
+</section>
+
+@code {
+    private string LevelLabel(int level) => L(level switch
+    {
+        >= 90 => "skills.level.expert",
+        >= 75 => "skills.level.advanced",
+        >= 50 => "skills.level.intermediate",
+        _ => "skills.level.familiar",
+    });
+}

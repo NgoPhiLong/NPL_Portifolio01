@@ -1,0 +1,65 @@
+@inherits SiteComponentBase
+@implements IDisposable
+
+<header class="site-header @(menuOpen ? "menu-open" : null)" @onkeydown="OnKeyDown">
+    <div class="container nav-inner">
+        <SectionLink Target="home" class="brand" OnNavigate="CloseMenu">
+            <span class="brand-mark" aria-hidden="true">@Data.Profile.Initials</span>
+            <span class="brand-name">@Data.Profile.Name</span>
+        </SectionLink>
+
+        <nav id="primary-nav" class="nav" aria-label="@L("nav.primary")">
+            <ul class="nav-links">
+                @foreach (var section in Site.NavSections)
+                {
+                    var active = Site.ActiveSection == section;
+                    <li>
+                        <SectionLink Target="@section" class="@(active ? "nav-link is-active" : "nav-link")"
+                                     aria-current="@(active ? "true" : null)" OnNavigate="CloseMenu">
+                            @L($"nav.{section}")
+                        </SectionLink>
+                    </li>
+                }
+            </ul>
+        </nav>
+
+        <div class="nav-tools">
+            <button type="button" class="lang-switch" @onclick="Site.ToggleLanguageAsync"
+                    aria-label="@L("lang.switch")" title="@L("lang.switch")">
+                <span class="@(Site.Language == "en" ? "is-active" : null)">EN</span>
+                <span class="@(Site.Language == "vi" ? "is-active" : null)">VI</span>
+            </button>
+            <button type="button" class="icon-btn" @onclick="Site.ToggleThemeAsync"
+                    aria-label="@ThemeLabel" title="@ThemeLabel">
+                <Icon Name="@(Site.Theme == "dark" ? "sun" : "moon")" Size="19" />
+            </button>
+            <button type="button" class="icon-btn menu-toggle" @onclick="() => menuOpen = !menuOpen"
+                    aria-expanded="@(menuOpen ? "true" : "false")" aria-controls="primary-nav"
+                    aria-label="@(menuOpen ? L("nav.close") : L("nav.open"))">
+                <Icon Name="@(menuOpen ? "x" : "menu")" Size="20" />
+            </button>
+        </div>
+    </div>
+</header>
+
+@code {
+    private bool menuOpen;
+
+    private string ThemeLabel => Site.Theme == "dark" ? L("theme.light") : L("theme.dark");
+
+    protected override void OnInitialized() => Site.ActiveSectionChanged += OnActiveSectionChanged;
+
+    private void OnActiveSectionChanged() => InvokeAsync(StateHasChanged);
+
+    private void CloseMenu() => menuOpen = false;
+
+    private void OnKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Escape")
+        {
+            menuOpen = false;
+        }
+    }
+
+    public void Dispose() => Site.ActiveSectionChanged -= OnActiveSectionChanged;
+}

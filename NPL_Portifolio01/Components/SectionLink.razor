@@ -1,0 +1,35 @@
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+@* Link to a section of the home page: smooth-scrolls when already on the home page, otherwise navigates there. *@
+<a @attributes="AdditionalAttributes" href="@Href" @onclick="GoAsync" @onclick:preventDefault>@ChildContent</a>
+
+@code {
+    [Parameter, EditorRequired] public string Target { get; set; } = "home";
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public EventCallback OnNavigate { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+
+    private string Href => Target == "home" ? "./" : $"./#{Target}";
+
+    private async Task GoAsync()
+    {
+        await OnNavigate.InvokeAsync();
+
+        if (IsOnHomePage())
+        {
+            await JS.InvokeVoidAsync("npl.scrollToSection", Target);
+        }
+        else
+        {
+            Navigation.NavigateTo(Href);
+        }
+    }
+
+    private bool IsOnHomePage()
+    {
+        var relative = Navigation.ToBaseRelativePath(Navigation.Uri);
+        var end = relative.IndexOfAny(['?', '#']);
+        return (end >= 0 ? relative[..end] : relative).Length == 0;
+    }
+}

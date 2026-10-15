@@ -1,0 +1,22 @@
+@inherits SiteComponentBase
+
+@if (Data.Socials.Count > 0)
+{
+    <ul class="social-links @Class" aria-label="@L("social")">
+        @foreach (var social in Data.Socials)
+        {
+            var external = !social.Url.StartsWith("mailto:", StringComparison.OrdinalIgnoreCase)
+                           && !social.Url.StartsWith("tel:", StringComparison.OrdinalIgnoreCase);
+            <li>
+                <a class="icon-btn" href="@social.Url" target="@(external ? "_blank" : null)" rel="@(external ? "noopener noreferrer" : null)"
+                   aria-label="@social.Name" title="@social.Name">
+                    <Icon Name="@social.Icon" Size="19" />
+                </a>
+            </li>
+        }
+    </ul>
+}
+
+@code {
+    [Parameter] public string? Class { get; set; }
+}

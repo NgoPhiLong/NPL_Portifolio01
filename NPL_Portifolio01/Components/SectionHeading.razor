@@ -1,0 +1,19 @@
+<div class="section-heading reveal">
+    <p class="eyebrow">
+        <span class="eyebrow-index">@Index</span>
+        <span class="eyebrow-line" aria-hidden="true"></span>
+        <span>@Eyebrow</span>
+    </p>
+    <h2 class="section-title">@Title</h2>
+    @if (!string.IsNullOrWhiteSpace(Subtitle))
+    {
+        <p class="section-subtitle">@Subtitle</p>
+    }
+</div>
+
+@code {
+    [Parameter] public string Index { get; set; } = string.Empty;
+    [Parameter] public string Eyebrow { get; set; } = string.Empty;
+    [Parameter, EditorRequired] public string Title { get; set; } = string.Empty;
+    [Parameter] public string? Subtitle { get; set; }
+}

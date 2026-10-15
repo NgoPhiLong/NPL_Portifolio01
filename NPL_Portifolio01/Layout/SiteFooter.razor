@@ -1,0 +1,15 @@
+@inherits SiteComponentBase
+
+<footer class="site-footer">
+    <div class="container footer-inner">
+        <div class="footer-brand">
+            <span class="brand-mark" aria-hidden="true">@Data.Profile.Initials</span>
+            <div>
+                <p class="footer-name">@Data.Profile.Name</p>
+                <p class="footer-copy">© @DateTime.Now.Year @Data.Profile.Name. @L("footer.rights")</p>
+            </div>
+        </div>
+        <p class="footer-built">@L("footer.built")</p>
+        <SocialLinks Class="footer-socials" />
+    </div>
+</footer>

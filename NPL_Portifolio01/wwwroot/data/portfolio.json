@@ -1,0 +1,302 @@
+{
+  "profile": {
+    "name": "Ngô Phi Long",
+    "initials": "NPL",
+    "roles": [
+      { "en": "Software Engineer", "vi": "Kỹ sư phần mềm" },
+      { "en": ".NET & Blazor Developer", "vi": "Lập trình viên .NET & Blazor" },
+      { "en": "Full-stack Web Developer", "vi": "Lập trình viên Full-stack" },
+      { "en": "Lifelong Learner", "vi": "Người không ngừng học hỏi" }
+    ],
+    "tagline": {
+      "en": "I design and build fast, reliable web applications — from clean APIs to polished user interfaces.",
+      "vi": "Tôi thiết kế và xây dựng các ứng dụng web nhanh, ổn định — từ API gọn gàng đến giao diện người dùng tinh tế."
+    },
+    "availability": { "en": "Open to new opportunities", "vi": "Sẵn sàng cho cơ hội mới" },
+    "avatar": "",
+    "location": { "en": "Vietnam", "vi": "Việt Nam" },
+    "email": "your.email@example.com",
+    "phone": "",
+    "cv": "",
+    "heroBadges": [ ".NET", "Blazor", "C#", "Azure" ]
+  },
+
+  "socials": [
+    { "name": "GitHub", "icon": "github", "url": "https://github.com/NgoPhiLong" },
+    { "name": "LinkedIn", "icon": "linkedin", "url": "https://www.linkedin.com/in/your-profile" },
+    { "name": "Email", "icon": "mail", "url": "mailto:your.email@example.com" }
+  ],
+
+  "about": {
+    "paragraphs": [
+      {
+        "en": "Hi! I'm Long — a software engineer from Vietnam who loves turning complex problems into simple, elegant software. I enjoy working across the whole stack, from designing APIs and databases to crafting interfaces that feel fast and intuitive.",
+        "vi": "Xin chào! Tôi là Long — một kỹ sư phần mềm đến từ Việt Nam, đam mê biến những bài toán phức tạp thành phần mềm đơn giản và tinh gọn. Tôi thích làm việc trên toàn bộ hệ thống, từ thiết kế API, cơ sở dữ liệu đến xây dựng giao diện nhanh và trực quan."
+      },
+      {
+        "en": "My main toolkit is C# and .NET: ASP.NET Core for services, Blazor for rich web UIs and Azure to run everything in the cloud. I care about clean architecture, automated testing and continuous delivery so that teams can ship with confidence.",
+        "vi": "Công cụ chính của tôi là C# và .NET: ASP.NET Core cho dịch vụ backend, Blazor cho giao diện web và Azure để vận hành trên nền tảng đám mây. Tôi chú trọng kiến trúc rõ ràng, kiểm thử tự động và triển khai liên tục để đội ngũ có thể phát hành sản phẩm một cách tự tin."
+      },
+      {
+        "en": "Outside of work you'll find me exploring new technologies, building side projects and sharing what I learn with the community.",
+        "vi": "Ngoài công việc, tôi thường tìm hiểu công nghệ mới, phát triển các dự án cá nhân và chia sẻ những điều mình học được với cộng đồng."
+      }
+    ],
+    "facts": [
+      { "icon": "map-pin", "label": { "en": "Based in", "vi": "Sống tại" }, "value": { "en": "Vietnam", "vi": "Việt Nam" } },
+      { "icon": "briefcase", "label": { "en": "Experience", "vi": "Kinh nghiệm" }, "value": { "en": "5+ years", "vi": "Hơn 5 năm" } },
+      { "icon": "globe", "label": { "en": "Languages", "vi": "Ngôn ngữ" }, "value": { "en": "Vietnamese, English", "vi": "Tiếng Việt, Tiếng Anh" } },
+      { "icon": "coffee", "label": { "en": "Fuelled by", "vi": "Nguồn năng lượng" }, "value": { "en": "Vietnamese coffee", "vi": "Cà phê sữa đá" } }
+    ],
+    "stats": [
+      { "value": 5, "suffix": "+", "label": { "en": "Years of experience", "vi": "Năm kinh nghiệm" } },
+      { "value": 20, "suffix": "+", "label": { "en": "Projects delivered", "vi": "Dự án đã hoàn thành" } },
+      { "value": 15, "suffix": "+", "label": { "en": "Technologies mastered", "vi": "Công nghệ thành thạo" } },
+      { "value": 100, "suffix": "%", "label": { "en": "Commitment to quality", "vi": "Tận tâm với chất lượng" } }
+    ]
+  },
+
+  "skillGroups": [
+    {
+      "title": "Backend",
+      "icon": "server",
+      "skills": [
+        { "name": "C# / .NET", "level": 92 },
+        { "name": "ASP.NET Core Web API", "level": 88 },
+        { "name": "Entity Framework Core", "level": 82 },
+        { "name": "SQL Server / PostgreSQL", "level": 78 }
+      ]
+    },
+    {
+      "title": "Frontend",
+      "icon": "layout",
+      "skills": [
+        { "name": "Blazor", "level": 90 },
+        { "name": "HTML & CSS", "level": 85 },
+        { "name": "JavaScript / TypeScript", "level": 76 },
+        { "name": "React", "level": 60 }
+      ]
+    },
+    {
+      "title": { "en": "Cloud & DevOps", "vi": "Cloud & DevOps" },
+      "icon": "cloud",
+      "skills": [
+        { "name": "Microsoft Azure", "level": 75 },
+        { "name": "Docker", "level": 70 },
+        { "name": "GitHub Actions" },
+        { "name": "Azure DevOps" },
+        { "name": "CI/CD" },
+        { "name": "Linux" }
+      ]
+    }
+  ],
+
+  "toolbox": [ "Git", "Visual Studio", "JetBrains Rider", "VS Code", "Postman", "Swagger / OpenAPI", "xUnit", "Figma", "Jira", "Clean Architecture", "Agile / Scrum" ],
+
+  "experience": [
+    {
+      "title": { "en": "Software Engineer", "vi": "Kỹ sư phần mềm" },
+      "organization": "Your Company",
+      "url": "",
+      "period": { "en": "2022 — Present", "vi": "2022 — Hiện tại" },
+      "location": { "en": "Ho Chi Minh City", "vi": "TP. Hồ Chí Minh" },
+      "description": {
+        "en": "Building and maintaining web applications used by teams across the organisation.",
+        "vi": "Xây dựng và duy trì các ứng dụng web phục vụ nhiều phòng ban trong tổ chức."
+      },
+      "highlights": [
+        {
+          "en": "Led the migration of a legacy WebForms application to Blazor and ASP.NET Core, cutting page load time by 60%.",
+          "vi": "Dẫn dắt việc chuyển đổi ứng dụng WebForms cũ sang Blazor và ASP.NET Core, giảm 60% thời gian tải trang."
+        },
+        {
+          "en": "Designed REST APIs and background services that process thousands of records every day.",
+          "vi": "Thiết kế REST API và các dịch vụ chạy nền xử lý hàng nghìn bản ghi mỗi ngày."
+        },
+        {
+          "en": "Set up CI/CD pipelines with GitHub Actions and Azure, enabling safe daily releases.",
+          "vi": "Thiết lập quy trình CI/CD với GitHub Actions và Azure, giúp phát hành an toàn hằng ngày."
+        }
+      ],
+      "tags": [ "C#", ".NET", "Blazor", "Azure", "SQL Server" ]
+    },
+    {
+      "title": { "en": ".NET Developer", "vi": "Lập trình viên .NET" },
+      "organization": "Previous Company",
+      "period": "2020 — 2022",
+      "location": { "en": "Ho Chi Minh City", "vi": "TP. Hồ Chí Minh" },
+      "description": {
+        "en": "Developed features for a B2B platform serving customers in Vietnam and abroad.",
+        "vi": "Phát triển tính năng cho nền tảng B2B phục vụ khách hàng trong và ngoài nước."
+      },
+      "highlights": [
+        {
+          "en": "Built a reporting module with dynamic filters and Excel export.",
+          "vi": "Xây dựng module báo cáo với bộ lọc động và xuất file Excel."
+        },
+        {
+          "en": "Raised automated test coverage from 30% to 75% with unit and integration tests.",
+          "vi": "Nâng độ bao phủ kiểm thử tự động từ 30% lên 75% bằng unit test và integration test."
+        }
+      ],
+      "tags": [ "ASP.NET Core", "EF Core", "React", "Docker" ]
+    },
+    {
+      "title": { "en": "Software Engineering Intern", "vi": "Thực tập sinh kỹ sư phần mềm" },
+      "organization": "Tech Startup",
+      "period": "2019 — 2020",
+      "location": { "en": "Ho Chi Minh City", "vi": "TP. Hồ Chí Minh" },
+      "description": {
+        "en": "Joined an agile team to build internal tools and learn production-grade engineering practices.",
+        "vi": "Tham gia nhóm phát triển theo mô hình Agile để xây dựng công cụ nội bộ và học hỏi quy trình kỹ thuật chuyên nghiệp."
+      },
+      "tags": [ "C#", "JavaScript", "Git" ]
+    }
+  ],
+
+  "education": [
+    {
+      "title": { "en": "Bachelor of Information Technology", "vi": "Cử nhân Công nghệ Thông tin" },
+      "organization": { "en": "Your University", "vi": "Trường Đại học của bạn" },
+      "period": "2016 — 2020",
+      "description": {
+        "en": "Focused on software engineering, databases and distributed systems.",
+        "vi": "Chuyên sâu về kỹ thuật phần mềm, cơ sở dữ liệu và hệ thống phân tán."
+      },
+      "highlights": [
+        {
+          "en": "Capstone project: a real-time attendance system using face recognition.",
+          "vi": "Đồ án tốt nghiệp: hệ thống điểm danh thời gian thực bằng nhận diện khuôn mặt."
+        }
+      ]
+    },
+    {
+      "title": "Microsoft Certified: Azure Developer Associate",
+      "organization": "Microsoft",
+      "url": "https://learn.microsoft.com/credentials/",
+      "period": "2023",
+      "description": {
+        "en": "Validated skills in designing, building and maintaining cloud applications on Azure.",
+        "vi": "Chứng nhận kỹ năng thiết kế, xây dựng và vận hành ứng dụng đám mây trên Azure."
+      }
+    }
+  ],
+
+  "projects": [
+    {
+      "id": "portfolio",
+      "title": { "en": "Personal Portfolio", "vi": "Portfolio cá nhân" },
+      "category": "Web",
+      "summary": {
+        "en": "This website — a bilingual, data-driven portfolio built with Blazor WebAssembly and hosted on GitHub Pages.",
+        "vi": "Chính trang web này — portfolio song ngữ, quản lý nội dung bằng JSON, xây dựng bằng Blazor WebAssembly và chạy trên GitHub Pages."
+      },
+      "description": {
+        "en": "A fast single-page portfolio with dark and light themes, English and Vietnamese content, scroll animations and an automated deployment pipeline. All content lives in one JSON file, so it can be updated without touching any code.",
+        "vi": "Portfolio dạng single-page với giao diện sáng/tối, nội dung tiếng Anh và tiếng Việt, hiệu ứng khi cuộn trang và quy trình triển khai tự động. Toàn bộ nội dung nằm trong một file JSON nên có thể cập nhật mà không cần sửa code."
+      },
+      "highlights": [
+        { "en": "Instant English / Vietnamese switching", "vi": "Chuyển đổi tiếng Anh / tiếng Việt tức thì" },
+        { "en": "Automatic deployment with GitHub Actions", "vi": "Tự động triển khai bằng GitHub Actions" },
+        { "en": "Responsive, accessible and respects reduced-motion settings", "vi": "Responsive, thân thiện với trợ năng và tôn trọng thiết lập giảm chuyển động" }
+      ],
+      "tags": [ "Blazor WebAssembly", "C#", "CSS", "GitHub Actions" ],
+      "icon": "layout",
+      "year": "2026",
+      "repoUrl": "https://github.com/NgoPhiLong/NPL_Portifolio01",
+      "demoUrl": "https://ngophilong.github.io/NPL_Portifolio01/",
+      "featured": true
+    },
+    {
+      "id": "taskflow",
+      "title": "TaskFlow",
+      "category": "Web",
+      "summary": {
+        "en": "A real-time Kanban board for small teams with live updates and role-based access.",
+        "vi": "Bảng Kanban thời gian thực cho nhóm nhỏ, cập nhật trực tiếp và phân quyền theo vai trò."
+      },
+      "description": {
+        "en": "TaskFlow helps small teams plan sprints, track work and collaborate in real time. Changes made by one member appear instantly for everyone else on the board.",
+        "vi": "TaskFlow giúp các nhóm nhỏ lên kế hoạch sprint, theo dõi công việc và cộng tác theo thời gian thực. Thay đổi của một thành viên được cập nhật ngay lập tức cho cả nhóm."
+      },
+      "highlights": [
+        { "en": "Live collaboration powered by SignalR", "vi": "Cộng tác trực tiếp nhờ SignalR" },
+        { "en": "Drag-and-drop boards with full activity history", "vi": "Kéo thả công việc và lưu toàn bộ lịch sử hoạt động" },
+        { "en": "Authentication and roles with ASP.NET Core Identity", "vi": "Xác thực và phân quyền với ASP.NET Core Identity" }
+      ],
+      "tags": [ ".NET", "Blazor Server", "SignalR", "SQL Server", "Identity" ],
+      "icon": "layers",
+      "year": "2025",
+      "repoUrl": "https://github.com/NgoPhiLong",
+      "featured": true
+    },
+    {
+      "id": "shopcore-api",
+      "title": "ShopCore API",
+      "category": "Backend",
+      "summary": {
+        "en": "A clean-architecture e-commerce API with caching, payments and thorough test coverage.",
+        "vi": "API thương mại điện tử theo Clean Architecture, có caching, thanh toán và kiểm thử đầy đủ."
+      },
+      "description": {
+        "en": "A reference backend for online stores: catalogue, carts, orders and payments, organised with Clean Architecture and CQRS.",
+        "vi": "Backend mẫu cho cửa hàng trực tuyến: danh mục sản phẩm, giỏ hàng, đơn hàng và thanh toán, tổ chức theo Clean Architecture và CQRS."
+      },
+      "highlights": [
+        { "en": "Response caching with Redis", "vi": "Tăng tốc phản hồi với Redis cache" },
+        { "en": "OpenAPI documentation and versioned endpoints", "vi": "Tài liệu OpenAPI và phiên bản hóa endpoint" },
+        { "en": "Containerised with Docker Compose", "vi": "Đóng gói bằng Docker Compose" }
+      ],
+      "tags": [ "ASP.NET Core", "EF Core", "PostgreSQL", "Redis", "Docker" ],
+      "icon": "server",
+      "year": "2024",
+      "repoUrl": "https://github.com/NgoPhiLong"
+    },
+    {
+      "id": "insight-dashboard",
+      "title": "Insight Dashboard",
+      "category": { "en": "Data", "vi": "Dữ liệu" },
+      "summary": {
+        "en": "An interactive dashboard that turns raw operational data into clear charts and KPIs.",
+        "vi": "Dashboard tương tác biến dữ liệu vận hành thô thành biểu đồ và chỉ số KPI trực quan."
+      },
+      "highlights": [
+        { "en": "Serverless data ingestion with Azure Functions", "vi": "Thu thập dữ liệu serverless với Azure Functions" },
+        { "en": "Filterable charts and exportable reports", "vi": "Biểu đồ có bộ lọc và báo cáo có thể xuất file" }
+      ],
+      "tags": [ "Blazor", "Azure Functions", "Cosmos DB", "Chart.js" ],
+      "icon": "bar-chart",
+      "year": "2024"
+    },
+    {
+      "id": "pocket-expense",
+      "title": "Pocket Expense",
+      "category": { "en": "Mobile", "vi": "Di động" },
+      "summary": {
+        "en": "A cross-platform expense tracker with offline storage and monthly insights.",
+        "vi": "Ứng dụng quản lý chi tiêu đa nền tảng, lưu trữ offline và thống kê theo tháng."
+      },
+      "tags": [ ".NET MAUI", "SQLite", "MVVM" ],
+      "icon": "smartphone",
+      "year": "2023",
+      "repoUrl": "https://github.com/NgoPhiLong"
+    },
+    {
+      "id": "devkit-cli",
+      "title": "devkit CLI",
+      "category": { "en": "Tools", "vi": "Công cụ" },
+      "summary": {
+        "en": "A command-line tool that automates repetitive project setup and code generation.",
+        "vi": "Công cụ dòng lệnh tự động hóa việc khởi tạo dự án và sinh mã lặp đi lặp lại."
+      },
+      "tags": [ "C#", "System.CommandLine", "NuGet" ],
+      "icon": "terminal",
+      "year": "2023",
+      "repoUrl": "https://github.com/NgoPhiLong"
+    }
+  ],
+
+  "contact": {
+    "formspreeId": ""
+  }
+}

@@ -1,7 +1,53 @@
 ﻿@page "/"
+@inherits SiteComponentBase
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
 
-<PageTitle>Home</PageTitle>
+<PageTitle>@PageTitleText</PageTitle>
 
-<h1>Hello, world!</h1>
+<HeroSection />
 
-Welcome to your new app.
+@if (Site.HasSection("about"))
+{
+    <AboutSection />
+}
+@if (Site.HasSection("skills"))
+{
+    <SkillsSection />
+}
+@if (Site.HasSection("experience"))
+{
+    <ExperienceSection />
+}
+@if (Site.HasSection("projects"))
+{
+    <ProjectsSection />
+}
+<ContactSection />
+
+@code {
+    private string PageTitleText
+    {
+        get
+        {
+            var name = Data.Profile.Name;
+            var role = Data.Profile.Roles.Count > 0 ? T(Data.Profile.Roles[0]) : string.Empty;
+            return string.IsNullOrWhiteSpace(role) ? name : $"{name} — {role}";
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+        {
+            return;
+        }
+
+        // Deep links such as /#projects: the sections only exist after the first render.
+        var fragment = new Uri(Navigation.Uri).Fragment.TrimStart('#');
+        if (!string.IsNullOrWhiteSpace(fragment))
+        {
+            await JS.InvokeVoidAsync("npl.scrollToSection", Uri.UnescapeDataString(fragment), false);
+        }
+    }
+}

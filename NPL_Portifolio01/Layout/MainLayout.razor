@@ -1,16 +1,72 @@
 ﻿@inherits LayoutComponentBase
-<div class="page">
-    <div class="sidebar">
-        <NavMenu/>
-    </div>
+@implements IAsyncDisposable
+@inject SiteState Site
+@inject IJSRuntime JS
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
+<CascadingValue Value="Site">
+    <div class="scroll-progress" aria-hidden="true"></div>
+    <a class="skip-link" href="#main" @onclick="SkipToContentAsync" @onclick:preventDefault>@Site.L("nav.skip")</a>
 
-        <article class="content px-4">
+    <NavBar />
+
+    <main id="main" tabindex="-1" @ref="main">
+        @if (Site.LoadError is not null)
+        {
+            <section class="load-error">
+                <div class="container load-error-card">
+                    <span class="icon-badge" aria-hidden="true"><Icon Name="alert-circle" Size="22" /></span>
+                    <h1>@Site.L("error.title")</h1>
+                    <p>@Site.L("error.text")</p>
+                    <pre>@Site.LoadError</pre>
+                    <button type="button" class="btn btn-primary" onclick="location.reload()">@Site.L("error.reload")</button>
+                </div>
+            </section>
+        }
+        else
+        {
             @Body
-        </article>
+        }
     </main>
-</div>
+
+    <SiteFooter />
+
+    <button type="button" class="back-to-top" @onclick="ScrollToTopAsync" aria-label="@Site.L("footer.top")" title="@Site.L("footer.top")">
+        <Icon Name="arrow-up" Size="20" />
+    </button>
+</CascadingValue>
+
+@code {
+    private ElementReference main;
+    private DotNetObjectReference<SiteState>? siteRef;
+
+    protected override void OnInitialized() => Site.Changed += OnSiteChanged;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            siteRef = DotNetObjectReference.Create(Site);
+            await JS.InvokeVoidAsync("npl.init", siteRef);
+        }
+    }
+
+    private void OnSiteChanged() => InvokeAsync(StateHasChanged);
+
+    private Task ScrollToTopAsync() => JS.InvokeVoidAsync("npl.scrollToTop").AsTask();
+
+    private Task SkipToContentAsync() => main.FocusAsync().AsTask();
+
+    public async ValueTask DisposeAsync()
+    {
+        Site.Changed -= OnSiteChanged;
+        try
+        {
+            await JS.InvokeVoidAsync("npl.dispose");
+        }
+        catch (JSDisconnectedException)
+        {
+        }
+
+        siteRef?.Dispose();
+    }
+}

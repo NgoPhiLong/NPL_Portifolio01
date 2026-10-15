@@ -1,0 +1,97 @@
+@inherits SiteComponentBase
+
+<section id="experience" class="section" data-nav-section>
+    <div class="container experience-layout">
+        <div class="experience-intro">
+            <SectionHeading Index="@Site.SectionNumber("experience")" Eyebrow="@L("nav.experience")" Title="@L("experience.title")" Subtitle="@L("experience.subtitle")" />
+
+            @if (Data.Experience.Count > 0 && Data.Education.Count > 0)
+            {
+                <div class="segmented reveal" role="group" aria-label="@L("nav.experience")">
+                    <button type="button" class="segment @(tab == WorkTab ? "is-active" : null)"
+                            aria-pressed="@(tab == WorkTab ? "true" : "false")" @onclick="() => tab = WorkTab">
+                        <Icon Name="briefcase" Size="17" /> @L("experience.work")
+                    </button>
+                    <button type="button" class="segment @(tab == EducationTab ? "is-active" : null)"
+                            aria-pressed="@(tab == EducationTab ? "true" : "false")" @onclick="() => tab = EducationTab">
+                        <Icon Name="book-open" Size="17" /> @L("experience.education")
+                    </button>
+                </div>
+            }
+        </div>
+
+        <ol class="timeline" @key="CurrentTab">
+            @foreach (var (entry, index) in Entries.Select((e, i) => (e, i)))
+            {
+                <li class="timeline-item reveal" style="--delay: @(Math.Min(index, 4) * 80)ms">
+                    <span class="timeline-dot" aria-hidden="true">
+                        <Icon Name="@(CurrentTab == WorkTab ? "briefcase" : "award")" Size="15" />
+                    </span>
+                    <article class="timeline-card">
+                        <header class="timeline-head">
+                            <div>
+                                <h3 class="timeline-title">@T(entry.Title)</h3>
+                                <p class="timeline-org">
+                                    @if (!string.IsNullOrWhiteSpace(entry.Url))
+                                    {
+                                        <a href="@entry.Url" target="_blank" rel="noopener noreferrer">@T(entry.Organization) <Icon Name="arrow-up-right" Size="14" /></a>
+                                    }
+                                    else
+                                    {
+                                        @T(entry.Organization)
+                                    }
+                                </p>
+                            </div>
+                            <div class="timeline-when">
+                                @if (!entry.Period.IsEmpty)
+                                {
+                                    <span class="timeline-period"><Icon Name="calendar" Size="14" /> @T(entry.Period)</span>
+                                }
+                                @if (!entry.Location.IsEmpty)
+                                {
+                                    <span class="timeline-location"><Icon Name="map-pin" Size="14" /> @T(entry.Location)</span>
+                                }
+                            </div>
+                        </header>
+
+                        @if (!entry.Description.IsEmpty)
+                        {
+                            <p class="timeline-text">@T(entry.Description)</p>
+                        }
+
+                        @if (entry.Highlights.Count > 0)
+                        {
+                            <ul class="check-list">
+                                @foreach (var highlight in entry.Highlights)
+                                {
+                                    <li><Icon Name="check" Size="16" StrokeWidth="2.5" /><span>@T(highlight)</span></li>
+                                }
+                            </ul>
+                        }
+
+                        @if (entry.Tags.Count > 0)
+                        {
+                            <ul class="tag-list">
+                                @foreach (var tag in entry.Tags)
+                                {
+                                    <li class="tag">@tag</li>
+                                }
+                            </ul>
+                        }
+                    </article>
+                </li>
+            }
+        </ol>
+    </div>
+</section>
+
+@code {
+    private const string WorkTab = "work";
+    private const string EducationTab = "education";
+
+    private string tab = WorkTab;
+
+    private string CurrentTab => Data.Experience.Count == 0 ? EducationTab : Data.Education.Count == 0 ? WorkTab : tab;
+
+    private List<TimelineEntry> Entries => CurrentTab == WorkTab ? Data.Experience : Data.Education;
+}

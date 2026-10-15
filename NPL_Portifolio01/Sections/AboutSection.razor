@@ -1,0 +1,52 @@
+@inherits SiteComponentBase
+
+<section id="about" class="section" data-nav-section>
+    <div class="container">
+        <SectionHeading Index="@Site.SectionNumber("about")" Eyebrow="@L("nav.about")" Title="@L("about.title")" Subtitle="@L("about.subtitle")" />
+
+        <div class="about-grid">
+            <div class="about-text reveal">
+                @foreach (var paragraph in About.Paragraphs)
+                {
+                    <p>@T(paragraph)</p>
+                }
+
+                @if (About.Facts.Count > 0)
+                {
+                    <dl class="facts">
+                        @foreach (var fact in About.Facts)
+                        {
+                            <div class="fact">
+                                <span class="icon-badge" aria-hidden="true"><Icon Name="@fact.Icon" Size="18" /></span>
+                                <div>
+                                    <dt>@T(fact.Label)</dt>
+                                    <dd>@T(fact.Value)</dd>
+                                </div>
+                            </div>
+                        }
+                    </dl>
+                }
+            </div>
+
+            @if (About.Stats.Count > 0)
+            {
+                <ul class="stats">
+                    @foreach (var (stat, index) in About.Stats.Select((s, i) => (s, i)))
+                    {
+                        <li class="stat-card reveal" style="--delay: @(index * 90)ms">
+                            <span class="stat-value" aria-hidden="true">
+                                <span class="stat-number" style="--target: @stat.Value"></span>@stat.Suffix
+                            </span>
+                            <span class="sr-only">@stat.Value@stat.Suffix</span>
+                            <span class="stat-label">@T(stat.Label)</span>
+                        </li>
+                    }
+                </ul>
+            }
+        </div>
+    </div>
+</section>
+
+@code {
+    private AboutInfo About => Data.About;
+}

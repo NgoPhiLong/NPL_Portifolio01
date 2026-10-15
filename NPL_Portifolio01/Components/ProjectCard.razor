@@ -1,0 +1,85 @@
+@inherits SiteComponentBase
+
+<article class="project-card reveal" style="--delay: @(DelayMs)ms; --hue: @Hue">
+    <div class="project-cover" aria-hidden="true">
+        @if (!string.IsNullOrWhiteSpace(Project.Image))
+        {
+            <img src="@Project.Image" alt="" loading="lazy" decoding="async" />
+        }
+        else
+        {
+            <span class="project-cover-art">
+                <Icon Name="@Project.Icon" Size="46" StrokeWidth="1.5" />
+            </span>
+        }
+    </div>
+
+    @if (Project.Featured)
+    {
+        <span class="project-badge"><Icon Name="star" Size="13" /> @L("projects.featured")</span>
+    }
+
+    <div class="project-body">
+        <p class="project-meta">
+            <span>@T(Project.Category)</span>
+            @if (!string.IsNullOrWhiteSpace(Project.Year))
+            {
+                <span class="dot-separator" aria-hidden="true"></span>
+                <span>@Project.Year</span>
+            }
+        </p>
+
+        <h3 class="project-title">
+            <button type="button" class="stretched-link" @onclick="() => OnOpen.InvokeAsync(Project)">@T(Project.Title)</button>
+        </h3>
+
+        <p class="project-summary">@T(Project.Summary)</p>
+
+        @if (Project.Tags.Count > 0)
+        {
+            <ul class="tag-list" aria-label="@L("projects.tech")">
+                @foreach (var tag in Project.Tags.Take(MaxTags))
+                {
+                    <li class="tag">@tag</li>
+                }
+                @if (Project.Tags.Count > MaxTags)
+                {
+                    <li class="tag tag-more">+@(Project.Tags.Count - MaxTags)</li>
+                }
+            </ul>
+        }
+
+        <div class="project-footer">
+            <span class="project-more">@L("projects.details") <Icon Name="arrow-right" Size="16" /></span>
+            <span class="project-links">
+                @if (!string.IsNullOrWhiteSpace(Project.RepoUrl))
+                {
+                    <a class="icon-btn small" href="@Project.RepoUrl" target="_blank" rel="noopener noreferrer"
+                       aria-label="@($"{L("projects.code")} – {T(Project.Title)}")" title="@L("projects.code")">
+                        <Icon Name="github" Size="17" />
+                    </a>
+                }
+                @if (!string.IsNullOrWhiteSpace(Project.DemoUrl))
+                {
+                    <a class="icon-btn small" href="@Project.DemoUrl" target="_blank" rel="noopener noreferrer"
+                       aria-label="@($"{L("projects.demo")} – {T(Project.Title)}")" title="@L("projects.demo")">
+                        <Icon Name="external-link" Size="17" />
+                    </a>
+                }
+            </span>
+        </div>
+    </div>
+</article>
+
+@code {
+    private const int MaxTags = 4;
+    private static readonly int[] Hues = [258, 190, 325, 152, 28, 215, 285, 170];
+
+    [Parameter, EditorRequired] public Project Project { get; set; } = default!;
+    [Parameter] public int Hue { get; set; } = Hues[0];
+    [Parameter] public int DelayMs { get; set; }
+    [Parameter] public EventCallback<Project> OnOpen { get; set; }
+
+    /// <summary>Accent hue used for the generated cover of the project at <paramref name="index"/>.</summary>
+    public static int HueFor(int index) => Hues[Math.Abs(index) % Hues.Length];
+}

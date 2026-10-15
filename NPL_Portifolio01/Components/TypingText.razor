@@ -1,0 +1,113 @@
+@using System.Globalization
+@implements IDisposable
+
+<span class="typing" aria-hidden="true"><span class="typing-text">@visibleText</span>@if (Animate) { <span class="typing-caret"></span> }</span>
+<span class="sr-only">@string.Join(", ", Words)</span>
+
+@code {
+    private const int TypeDelayMs = 70;
+    private const int DeleteDelayMs = 35;
+    private const int HoldDelayMs = 1800;
+    private const int NextWordDelayMs = 350;
+
+    [Parameter] public IReadOnlyList<string> Words { get; set; } = [];
+
+    /// <summary>When false (e.g. the visitor prefers reduced motion) every word is shown at once.</summary>
+    [Parameter] public bool Animate { get; set; } = true;
+
+    private CancellationTokenSource? cts;
+    private string? signature;
+    private string visibleText = string.Empty;
+
+    protected override void OnParametersSet()
+    {
+        var words = Words.Where(w => !string.IsNullOrWhiteSpace(w)).ToArray();
+        var newSignature = $"{Animate}|{string.Join('\u001F', words)}";
+        if (newSignature == signature)
+        {
+            return;
+        }
+
+        signature = newSignature;
+        StopAnimation();
+
+        if (!Animate || words.Length == 0)
+        {
+            visibleText = string.Join(" · ", words);
+            return;
+        }
+
+        visibleText = string.Empty;
+        cts = new CancellationTokenSource();
+        _ = RunAsync(words, cts.Token);
+    }
+
+    private async Task RunAsync(string[] words, CancellationToken token)
+    {
+        try
+        {
+            await Task.Delay(500, token);
+            for (var index = 0; ; index = (index + 1) % words.Length)
+            {
+                var elements = SplitTextElements(words[index]);
+
+                for (var length = 1; length <= elements.Length; length++)
+                {
+                    await ShowAsync(elements, length);
+                    await Task.Delay(TypeDelayMs, token);
+                }
+
+                if (words.Length == 1)
+                {
+                    return;
+                }
+
+                await Task.Delay(HoldDelayMs, token);
+
+                for (var length = elements.Length - 1; length >= 0; length--)
+                {
+                    await ShowAsync(elements, length);
+                    await Task.Delay(DeleteDelayMs, token);
+                }
+
+                await Task.Delay(NextWordDelayMs, token);
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            // Words changed or the component was disposed.
+        }
+    }
+
+    private Task ShowAsync(string[] elements, int length)
+    {
+        visibleText = string.Concat(elements.AsSpan(0, length));
+        return InvokeAsync(StateHasChanged);
+    }
+
+    // Split by grapheme so that Vietnamese letters with combining accents are typed as one character.
+    private static string[] SplitTextElements(string text)
+    {
+        var elements = new List<string>(text.Length);
+        var enumerator = StringInfo.GetTextElementEnumerator(text);
+        while (enumerator.MoveNext())
+        {
+            elements.Add(enumerator.GetTextElement());
+        }
+        return [.. elements];
+    }
+
+    private void StopAnimation()
+    {
+        if (cts is null)
+        {
+            return;
+        }
+
+        cts.Cancel();
+        cts.Dispose();
+        cts = null;
+    }
+
+    public void Dispose() => StopAnimation();
+}
